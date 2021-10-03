@@ -20,28 +20,23 @@ class FeedbackList extends Component {
   }
 
 
-  countTotalFeedback({ good, neutral, bad }) {
-    const totalFeedback = good + neutral + bad;
-    this.setState({ total: totalFeedback });
-    this.countPositiveFeedbackPercentage(this.state);
-  };
-
-  countPositiveFeedbackPercentage({ good, total }) {
-    const PositiveFeedbackPercentage = Math.round(good / total * 100);
-    this.setState({ positive: PositiveFeedbackPercentage });
-  };
-
-
   handleClick = (e) => {
     e.preventDefault();
     const currentStateName = e.currentTarget.name;
-    const Increment = 1 + this.state.[currentStateName];
-    this.setState({ [currentStateName]: Increment });
+    this.setState(prevState => ({ [currentStateName]: 1 + prevState.[currentStateName], }));
 
-    this.countTotalFeedback(this.state);
+    this.countTotalFeedback();
   };
 
 
+  countTotalFeedback() {
+    this.setState(prevState => ({ total: prevState.good + prevState.neutral + prevState.bad, }));
+    this.countPositiveFeedbackPercentage();
+  };
+  
+  countPositiveFeedbackPercentage() {
+    this.setState(prevState => ({ positive: Math.round(prevState.good / prevState.total * 100), }));
+  };
 
   render() {
     const { handleClick } = this;
