@@ -1,6 +1,10 @@
 import React, { Component } from "react";
 // import PropTypes from "prop-types";
 import styles from "./FeedbackList.module.scss";
+import Statistics from "../statistics/Statistics.jsx";
+import FeedbackOptions from "../feedbackOptions/FeedbackOptions.jsx";
+import Section from "../section/Section.jsx";
+import Notification from "../notification/Notification.jsx";
 
 class FeedbackList extends Component {
 
@@ -11,77 +15,50 @@ class FeedbackList extends Component {
       good: 0,
       neutral: 0,
       bad: 0,
-      total: 0,
-      positive: 0,
     };
-
-    this.handleClick = this.handleClick.bind(this);
 
   }
 
 
-  handleClick = (e) => {
+  onLeaveFeedback = (e) => {
     e.preventDefault();
     const currentStateName = e.currentTarget.name;
     this.setState(prevState => ({ [currentStateName]: 1 + prevState.[currentStateName], }));
-
     this.countTotalFeedback();
   };
 
 
   countTotalFeedback() {
-    this.setState(prevState => ({ total: prevState.good + prevState.neutral + prevState.bad, }));
-    this.countPositiveFeedbackPercentage();
+    const total = this.state.good + this.state.neutral + this.state.bad;
+    return total;
+
   };
   
   countPositiveFeedbackPercentage() {
-    this.setState(prevState => ({ positive: Math.round(prevState.good / prevState.total * 100), }));
+    const total = this.countTotalFeedback();
+    const positivePercentage = Math.round(this.state.good / total * 100);
+    return positivePercentage;
   };
 
   render() {
-    const { handleClick } = this;
-
+    const { good, neutral, bad } = this.state;
+    const options = Object.keys(this.state);
+    console.log(options);
+    
     return (
-      <div>
         <div>
-          <p className={styles.title}>Please leave feedback</p>
-          <button
-            type="button"
-            name="good"
-            className={styles.btn}
-            onClick={handleClick}
-          >
-            Good &#11088;&#11088;&#11088;
-          </button>
-          <button
-            type="button"
-            name="neutral"
-            className={styles.btn}
-            onClick={handleClick}
-          >
-            Neutral &#11088;&#11088;
-          </button>
-          <button
-            type="button"
-            name="bad"
-            className={styles.btn}
-            onClick={handleClick}
-          >
-            Bad &#11088;
-          </button>
+        <Section title="Please leave feedback">
+        <FeedbackOptions options={options} onLeaveFeedback={this.onLeaveFeedback.bind(this)} />
+        </Section>
+
+        <Section title="Statistics">
+          {this.countTotalFeedback() ? <Statistics good={good} neutral={neutral} bad={bad} total={this.countTotalFeedback()} positivePercentage={this.countPositiveFeedbackPercentage()} /> : <Notification message="No feedback given!"/>}
+          
+        
+        </Section>
+        
         </div>
-        <div>
-          <p className={styles.title}>Statistics</p>
-          <ul className={styles.list}>
-            <li className={styles.listItem}>Good: {this.state.good}</li>
-            <li className={styles.listItem}>Neutral: {this.state.neutral}</li>
-            <li className={styles.listItem}>Bad: {this.state.bad}</li>
-            <li className={styles.listItem}>Total: {this.state.total}</li>
-            <li className={styles.listItem}>Positive feedback: {this.state.positive}%</li>
-          </ul>
-        </div>
-      </div>
-    );
+        );
   }
 }
 
