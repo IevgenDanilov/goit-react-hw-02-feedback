@@ -1,5 +1,4 @@
 import React, { Component } from "react";
-// import PropTypes from "prop-types";
 import styles from "./FeedbackList.module.scss";
 import Statistics from "../statistics/Statistics.jsx";
 import FeedbackOptions from "../feedbackOptions/FeedbackOptions.jsx";
@@ -43,7 +42,7 @@ class FeedbackList extends Component {
   render() {
     const { good, neutral, bad } = this.state;
     const options = Object.keys(this.state);
-    console.log(options);
+    // console.log(options);
     
     return (
         <div>
@@ -53,8 +52,6 @@ class FeedbackList extends Component {
 
         <Section title="Statistics">
           {this.countTotalFeedback() ? <Statistics good={good} neutral={neutral} bad={bad} total={this.countTotalFeedback()} positivePercentage={this.countPositiveFeedbackPercentage()} /> : <Notification message="No feedback given!"/>}
-          
-        
         </Section>
         
         </div>
